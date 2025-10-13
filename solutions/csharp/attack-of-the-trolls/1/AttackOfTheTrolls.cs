@@ -1,0 +1,56 @@
+// TODO: define the 'AccountType' enum
+
+enum AccountType
+{
+    Guest,
+    User,
+    Moderator
+    
+}
+
+// TODO: define the 'Permission' enum
+[Flags]
+enum Permission
+{
+    None = 0,
+    Read = 1<<0,
+    Write = 1 << 1,
+    Delete = 1 << 2,
+    All = Read|Write|Delete
+    
+}
+
+static class Permissions
+{
+    public static Permission Default(AccountType accountType)
+    {
+        switch (accountType)
+        {
+    
+            case AccountType.Guest:
+                return Permission.Read;
+                break;
+
+            case AccountType.User:
+                return Permission.Read|Permission.Write;
+                break;
+
+            case AccountType.Moderator:
+                return Permission.All;
+                break;
+
+            default:
+                return Permission.None;
+                break;
+        }
+    }
+
+    public static Permission Grant(Permission current, Permission grant) =>
+        current | grant;
+
+    public static Permission Revoke(Permission current, Permission revoke) =>
+        current & ~revoke;
+
+    public static bool Check(Permission current, Permission check) =>
+        current.HasFlag(check);
+}
